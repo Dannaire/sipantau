@@ -1,75 +1,81 @@
-"use client"
+'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation'
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
-import { useMemo } from 'react'
-import Navbar from '@/components/ui/Navbar'
-import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+import { useRouter } from 'next/navigation';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { useEffect, useMemo, useState } from 'react';
+import Navbar from '@/components/ui/Navbar';
+import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
+
+export const fetchCache = 'force-no-store';
 
 export default function PriceChart() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const router = useRouter();
 
-  const marketName = searchParams.get('market') || 'Pasar Tidak Diketahui'
-  const komoditasName = searchParams.get('komoditas') || 'Komoditas Tidak Diketahui'
+  const [marketName, setMarketName] = useState('Pasar Tidak Diketahui');
+  const [komoditasName, setKomoditasName] = useState('Komoditas Tidak Diketahui');
 
+  // Ambil data dari localStorage
+  useEffect(() => {
+    const savedMarket = localStorage.getItem('selectedMarket');
+    const savedKomoditas = localStorage.getItem('selectedKomoditasRight');
 
-const dateLabels = useMemo(() => {
-  const labels: string[] = []
-  const today = new Date()
+    if (savedMarket) setMarketName(savedMarket);
+    if (savedKomoditas) setKomoditasName(savedKomoditas);
+  }, []);
 
-  // format: 20 Juli 2025
-  const formatter = new Intl.DateTimeFormat('id-ID', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  })
+  const dateLabels = useMemo(() => {
+    const labels: string[] = [];
+    const today = new Date();
 
-  // mulai dari hari sebelumnya (today - 1)
-  for (let i = -1; i <= 3; i++) {
-    const date = new Date(today)
-    date.setDate(today.getDate() + i)
-    labels.push(formatter.format(date))
-  }
+    const formatter = new Intl.DateTimeFormat('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
 
-  return labels
-}, [])
+    for (let i = -1; i <= 3; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      labels.push(formatter.format(date));
+    }
 
+    return labels;
+  }, []);
 
+  const priceData = [54000, 61500, 69000, 70000, 72500];
 
-  // 📊 Harga sample
-  const priceData = [54000, 61500, 69000, 70000, 72500]
-
-  // ✨ Pisahkan data historical & predicted
   const historicalData = dateLabels.slice(0, 3).map((date, i) => ({
     date,
     price: priceData[i]
-  }))
+  }));
+
   const predictedData = dateLabels.slice(2).map((date, i) => ({
     date,
     price: priceData[i + 2]
-  }))
-const handleBreakdown = () => {
-    router.push(
-      `/breakdown?market=${encodeURIComponent(marketName)}&komoditas=${encodeURIComponent(komoditasName)}`
-    )
-  }
+  }));
+
+  const handleBreakdown = () => {
+    // Simpan ke localStorage sebelum push
+    localStorage.setItem('market', marketName);
+    localStorage.setItem('komoditas', komoditasName);
+
+    router.push('/breakdown');
+  };
 
   return (
     <main className="min-h-screen bg-gray-100">
       <Navbar />
 
       <div className="flex justify-start px-12 md:px-20 -translate-y-10 xl:translate-y-4">
-       <div className="w-full flex justify-start">
-         <button
-           onClick={() => router.back()}
-           className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
-         >
-           <HiArrowLeft size={20} color="white" />
-           <span>Back</span>
-         </button>
-       </div>
-       
+        <div className="w-full flex justify-start">
+          <button
+            onClick={() => router.back()}
+            className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
+          >
+            <HiArrowLeft size={20} color="white" />
+            <span>Back</span>
+          </button>
+        </div>
       </div>
 
       <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[95%] xl:w-[95%] mx-auto px-4 sm:px-6 lg:px-20 py-1 transition-all duration-300">
@@ -83,12 +89,11 @@ const handleBreakdown = () => {
         </div>
 
         {/* Chart with vertical label */}
-        <div className="   mb-1">
+        <div className="mb-1">
           <div className="flex">
             {/* Vertical Label */}
             <div className="flex items-center justify-center w-15 relative z-0">
-              <span className="text-2xl font-bold whitespace-nowrap
- text-black transform -rotate-90">
+              <span className="text-2xl font-bold whitespace-nowrap text-black transform -rotate-90">
                 Harga (Rp)
               </span>
             </div>
@@ -103,47 +108,41 @@ const handleBreakdown = () => {
                     type="category"
                     allowDuplicatedCategory={false}
                     interval={0}
-                    padding={{ left: 100, right: 10 }} // 🎯 tambah jarak kiri-kanan
+                    padding={{ left: 100, right: 10 }}
                   />
-
-<YAxis
-  domain={[45000, 74000]} // 🎯 tambahkan 1000 ke bawah & atas untuk gap
-  ticks={[49000, 54000, 59000, 64000, 69000, 74000]}
-  tickFormatter={(value) => `Rp${value.toLocaleString()}`}
-  tick={{ fontSize: 12, fill: '#6B7280' }}
-/>
-
-
+                  <YAxis
+                    domain={[45000, 74000]}
+                    ticks={[49000, 54000, 59000, 64000, 69000, 74000]}
+                    tickFormatter={(value) => `Rp${value.toLocaleString()}`}
+                    tick={{ fontSize: 12, fill: '#6B7280' }}
+                  />
                   <Tooltip
-  content={({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      const currentPrice = payload[0].value as number
-      const currentIndex = priceData.findIndex(price => price === currentPrice)
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const currentPrice = payload[0].value as number;
+                        const currentIndex = priceData.findIndex(price => price === currentPrice);
 
-      let info = ''
-      if (currentIndex > 0) {
-        const prevPrice = priceData[currentIndex - 1]
-        const change = ((currentPrice - prevPrice) / prevPrice) * 100
-        const isIncrease = change >= 0
+                        let info = '';
+                        if (currentIndex > 0) {
+                          const prevPrice = priceData[currentIndex - 1];
+                          const change = ((currentPrice - prevPrice) / prevPrice) * 100;
+                          const isIncrease = change >= 0;
 
-        info = `${isIncrease ? '📈 Kenaikan' : '📉 Penurunan'} ${Math.abs(change).toFixed(2)}%`
-      } else {
-        info = 'Data pertama'
-      }
+                          info = `${isIncrease ? '📈 Kenaikan' : '📉 Penurunan'} ${Math.abs(change).toFixed(2)}%`;
+                        } else {
+                          info = 'Data pertama';
+                        }
 
-      return (
-        <div className="p-2 rounded-lg shadow bg-white border border-gray-200">
-          {/* <p className="font-semibold text-gray-700">{label}</p> */}
-          <p className="text-gray-500">Rp{currentPrice.toLocaleString()}</p>
-          <p className="text-sm font-medium text-blue-600">{info}</p>
-        </div>
-      )
-    }
-    return null
-  }}
-/>
-
-                  {/* Black solid line (historical) */}
+                        return (
+                          <div className="p-2 rounded-lg shadow bg-white border border-gray-200">
+                            <p className="text-gray-500">Rp{currentPrice.toLocaleString()}</p>
+                            <p className="text-sm font-medium text-blue-600">{info}</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Line
                     data={historicalData}
                     type="linear"
@@ -153,7 +152,6 @@ const handleBreakdown = () => {
                     dot={{ fill: 'black', r: 5 }}
                     isAnimationActive={false}
                   />
-                  {/* Red dashed line (prediction) */}
                   <Line
                     data={predictedData}
                     type="linear"
@@ -184,24 +182,23 @@ const handleBreakdown = () => {
               className="bg-[#456882] w-[80%] justify-center text-white px-8 py-3 rounded-full font-semibold hover:bg-[#243039] transition flex items-center space-x-2"
             >
               <span>Breakdown</span>
-              <span><HiArrowRight/></span>
+              <HiArrowRight />
             </button>
           </div>
-         <div className="flex-1 flex justify-center ">
-  <div className="space-y-2 text-left">
-    <div className="flex items-center space-x-7 justify-start">
-      <div className="w-18 h-0.5 bg-red-500"></div>
-      <span className="text-sm font-semibold text-gray-600">Prediksi 3 Hari Kedepan</span>
-    </div>
-    <div className="flex items-center space-x-7 justify-start">
-      <div className="w-18 h-0.5 bg-black"></div>
-      <span className="text-sm font-semibold text-gray-600">Harga komoditas dua hari sebelumnya</span>
-    </div>
-  </div>
-</div>
-
+          <div className="flex-1 flex justify-center">
+            <div className="space-y-2 text-left">
+              <div className="flex items-center space-x-7 justify-start">
+                <div className="w-18 h-0.5 bg-red-500"></div>
+                <span className="text-sm font-semibold text-gray-600">Prediksi 3 Hari Kedepan</span>
+              </div>
+              <div className="flex items-center space-x-7 justify-start">
+                <div className="w-18 h-0.5 bg-black"></div>
+                <span className="text-sm font-semibold text-gray-600">Harga komoditas dua hari sebelumnya</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
-  )
+  );
 }

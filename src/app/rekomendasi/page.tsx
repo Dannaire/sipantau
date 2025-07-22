@@ -1,21 +1,31 @@
-"use client"
+'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation'
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
-import { useMemo } from 'react'
-import Navbar from '@/components/ui/Navbar'
-import { HiArrowLeft } from 'react-icons/hi'
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Navbar from '@/components/ui/Navbar';
+import { HiArrowLeft } from 'react-icons/hi';
+
+export const fetchCache = 'force-no-store';
 
 export default function Rekomendasi() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const marketName = searchParams.get('market') || 'Pasar Tidak Diketahui'
-  const komoditasName = searchParams.get('komoditas') || 'Komoditas Tidak Diketahui'
+  const router = useRouter();
+
+  const [marketName, setMarketName] = useState('Pasar Tidak Diketahui');
+  const [komoditasName, setKomoditasName] = useState('Komoditas Tidak Diketahui');
+
+  // Ambil data dari localStorage setelah komponen mount
+  useEffect(() => {
+    const savedMarket = localStorage.getItem('selectedMarket');
+    const savedKomoditas = localStorage.getItem('selectedKomoditasRight');
+
+    if (savedMarket) setMarketName(savedMarket);
+    if (savedKomoditas) setKomoditasName(savedKomoditas);
+  }, []);
 
   return (
     <main className="min-h-screen bg-gray-100">
       {/* Header */}
-     <Navbar/>
+      <Navbar />
 
       {/* Main Content */}
       <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[95%] xl:w-[95%] mx-auto px-4 sm:px-6 lg:px-20 py-1 transition-all duration-300">
@@ -41,7 +51,7 @@ export default function Rekomendasi() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-600 mb-3">KABUPATEN GARUT</h2>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Kabupaten Garut sedang mengalami surplus cabai rawit, lakukan 
+                  Kabupaten Garut sedang mengalami surplus cabai rawit, lakukan
                   koordinasi dengan daerah tersebut.
                 </p>
               </div>
@@ -49,7 +59,7 @@ export default function Rekomendasi() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-600 mb-3">KABUPATEN BANDUNG BARAT</h2>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Kabupaten Bandung Barat sedang mengalami surplus cabai rawit, 
+                  Kabupaten Bandung Barat sedang mengalami surplus cabai rawit,
                   lakukan koordinasi dengan daerah tersebut.
                 </p>
               </div>
@@ -57,26 +67,26 @@ export default function Rekomendasi() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-600 mb-3">LAKUKAN INVESTIGASI LAPANGAN</h2>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Lakukan investigasi rantai distribusi dan pengecekan penimbunan 
+                  Lakukan investigasi rantai distribusi dan pengecekan penimbunan
                   stock komoditas.
                 </p>
               </div>
             </div>
 
-<div className="w-full flex justify-start">
-             <button
-               onClick={() => router.back()}
-               className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
-             >
-               <HiArrowLeft size={20} color="white" />
-               <span>Back</span>
-             </button>
-           </div>
+            <div className="w-full flex justify-start">
+              <button
+                onClick={() => router.back()}
+                className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
+              >
+                <HiArrowLeft size={20} color="white" />
+                <span>Back</span>
+              </button>
+            </div>
           </div>
 
           {/* Right side - Image */}
           <div className="flex-1 h-[470px] flex justify-center items-center">
-             <img
+            <img
               src="/assets/img/sayur.png"
               alt="Map Kabupaten Sukabumi"
               className="w-full h-full object-contain"
@@ -85,5 +95,5 @@ export default function Rekomendasi() {
         </div>
       </div>
     </main>
-  )
+  );
 }

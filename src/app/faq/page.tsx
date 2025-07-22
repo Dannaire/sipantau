@@ -6,9 +6,7 @@ import { HiArrowLeft } from 'react-icons/hi'
 
 export default function FAQ() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const marketName = searchParams.get('market') || 'Pasar Tidak Diketahui'
-  const komoditasName = searchParams.get('komoditas') || 'Komoditas Tidak Diketahui'
+
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -59,7 +57,7 @@ export default function FAQ() {
               <div>
                 <h2 className="text-xl font-bold text-gray-00 mb-1">
                   Bagaimana cara mendapatkan pembaruan data terbaru?
-                </h2>7
+                </h2>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Data SIPANTAU diperbarui secara otomatis setiap hari berdasarkan laporan pasar dan input dari dinas terkait.
                 </p>

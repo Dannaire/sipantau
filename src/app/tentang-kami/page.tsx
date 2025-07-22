@@ -1,14 +1,12 @@
 "use client"
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Navbar from '@/components/ui/Navbar'
 import { HiArrowLeft } from 'react-icons/hi'
 
 export default function Tentang() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const marketName = searchParams.get('market') || 'Pasar Tidak Diketahui'
-  const komoditasName = searchParams.get('komoditas') || 'Komoditas Tidak Diketahui'
+
 
   return (
     <main className="min-h-screen bg-gray-100">

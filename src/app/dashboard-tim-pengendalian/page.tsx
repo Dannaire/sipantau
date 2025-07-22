@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from "@/components/ui/Navbar"
 import { useRouter } from 'next/navigation'
 import { FiSearch } from 'react-icons/fi'
@@ -24,6 +24,15 @@ export default function DashboardTimPenanggulangan() {
     'Pasar Palabuhanratu'
   ]
 
+  // ⬇️ Ambil pasar yang pernah dipilih dari localStorage saat komponen mount
+  useEffect(() => {
+    const savedMarket = localStorage.getItem('selectedMarket')
+    if (savedMarket) {
+      setSelectedMarket(savedMarket)
+      setSearchTerm(savedMarket)
+    }
+  }, [])
+
   const filteredPasar = pasarList.filter(pasar =>
     pasar.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -31,13 +40,14 @@ export default function DashboardTimPenanggulangan() {
   const handlePasarSelect = (pasar: string) => {
     setSearchTerm(pasar)
     setSelectedMarket(pasar)
+    localStorage.setItem('selectedMarket', pasar) // 📝 Simpan ke localStorage
     setShowDropdown(false)
     setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 30000000) // hide alert after 3s
+    setTimeout(() => setShowAlert(false), 3000) // hide alert after 3s
   }
 
   const handleCheckHarga = () => {
-    router.push(`/checking-station?market=${encodeURIComponent(selectedMarket)}`)
+    router.push('/checking-station') // 🚀 tanpa searchParam
   }
 
   return (
@@ -72,7 +82,9 @@ export default function DashboardTimPenanggulangan() {
                   onFocus={() => setShowDropdown(true)}
                   className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-full focus:outline-none focus:border-blue-500 text-gray-900"
                 />
-                <button className="absolute  right-0 top-[5%] bg-gradient-to-r from-[#456882] to-[#a5bfcc] text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-600 transition">
+                <button
+                  className="absolute right-0 top-[5%] bg-gradient-to-r from-[#456882] to-[#a5bfcc] text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-600 transition"
+                >
                   <FiSearch size={20} color="white" />
                 </button>
               </div>
@@ -100,16 +112,16 @@ export default function DashboardTimPenanggulangan() {
                 <div className="absolute top-0">
                   <button
                     onClick={handleCheckHarga}
-                    className="w-[100%]  bg-yellow-500 text-black px-6 py-3 rounded-full font-semibold hover:bg-yellow-600 transition flex items-center justify-center space-x-2 mb-2"
+                    className="w-[100%] bg-yellow-500 text-black px-6 py-3 rounded-full font-semibold hover:bg-yellow-600 transition flex items-center justify-center space-x-2 mb-2"
                   >
                     <span>Check!</span>
-                    <span><HiArrowRight/></span>
+                    <span><HiArrowRight /></span>
                   </button>
                 </div>
               )}
               {showAlert && selectedMarket && (
                 <div className="absolute bottom-0 w-full px-4 py-3">
-                  <strong className='text-3xl text-red-700 '>ALERT!</strong>
+                  <strong className='text-3xl text-red-700'>ALERT!</strong>
                   <p className='text-gray-900 text-xl'>
                     Harga dan pasokan di <b>{selectedMarket}</b> diprediksi terjadi kenaikan harga komoditas.
                   </p>
@@ -140,15 +152,15 @@ export default function DashboardTimPenanggulangan() {
 
         {/* Back Button */}
         <div className="-mt-24">
-         <div className="w-full flex justify-start">
-           <button
-             onClick={() => router.push('/')}
-             className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-12 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
-           >
-             <HiArrowLeft size={20} color="white" />
-             <span>Back</span>
-           </button>
-         </div>
+          <div className="w-full flex justify-start">
+            <button
+              onClick={() => router.push('/')}
+              className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-12 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
+            >
+              <HiArrowLeft size={20} color="white" />
+              <span>Back</span>
+            </button>
+          </div>
         </div>
       </div>
     </main>
