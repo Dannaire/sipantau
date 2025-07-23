@@ -25,13 +25,12 @@ export default function DashboardTimPenanggulangan() {
   ]
 
   // ⬇️ Ambil pasar yang pernah dipilih dari localStorage saat komponen mount
-  useEffect(() => {
-    const savedMarket = localStorage.getItem('selectedMarket')
-    if (savedMarket) {
-      setSelectedMarket(savedMarket)
-      setSearchTerm(savedMarket)
-    }
-  }, [])
+useEffect(() => {
+  // Jangan auto-set selectedMarket dari localStorage
+  // Biar user harus pilih dulu setiap kali masuk ke halaman ini
+  setSelectedMarket('')
+  setSearchTerm('')
+}, [])
 
   const filteredPasar = pasarList.filter(pasar =>
     pasar.toLowerCase().includes(searchTerm.toLowerCase())
@@ -64,7 +63,7 @@ export default function DashboardTimPenanggulangan() {
             <div className="flex items-center space-x-4 mb-6">
               <div className="w-4 h-4 bg-red-600 rounded-full"></div>
               <span className="text-lg sm:text-xl font-semibold">
-                Lokasi 8 Pasar Induk di Kabupaten Sukabumi
+                Lokasi Pasar Rakyat di Kabupaten Sukabumi
               </span>
             </div>
 

@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker"
 import { HiArrowLeft } from 'react-icons/hi'
 import "react-datepicker/dist/react-datepicker.css"
 
-export default function InputHarga() {
+export default function InputHargaPasar() {
   const router = useRouter()
   const [hargaData, setHargaData] = useState(
     Array.from({ length: 30 }, () => ({ komoditas: '', harga: '', tanggal: null }))
@@ -33,7 +33,7 @@ export default function InputHarga() {
         <h1 className=" text-3xl sm:text-4xl text-center mb-8 text-gray-800">
           <span>DATA </span>
           <span className='font-bold'>HARGA </span>
-          <span>DARI PETANI</span> </h1>
+          <span>DARI PASAR</span> </h1>
 
         {/* Form Card */}
         <div className="w-[100%] sm:w-[90%] md:w-[90%] lg:w-[65%] xl:w-[70%] mx-auto transition-all duration-300">

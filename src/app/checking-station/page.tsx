@@ -22,13 +22,11 @@ export default function CheckingStation() {
   // 🔥 Ambil marketName & komoditas dari LocalStorage saat pertama load
   useEffect(() => {
     const storedMarket = localStorage.getItem('selectedMarket')
-    const storedLeft = localStorage.getItem('selectedKomoditasLeft')
-    const storedRight = localStorage.getItem('selectedKomoditasRight')
+
 
 
     if (storedMarket) setMarketName(storedMarket)
-    if (storedLeft) setSelectedKomoditasLeft(storedLeft)
-    if (storedRight) setSelectedKomoditasRight(storedRight)
+
   }, [])
 
   const handleCheckHarga = (komoditas = selectedKomoditasLeft) => {
