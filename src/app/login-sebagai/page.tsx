@@ -55,9 +55,9 @@ export default function LoginSelection() {
           className="relative bg-red-700 rounded-4xl shadow-[8px_8px_20px_rgba(0,0,0,0.5)] pt-32 pb-16 px-14 flex flex-col items-center space-y-8 w-[28rem] hover:brightness-110 transition"
         >
           <img
-            src="/assets/img/logo2.png"
+            src="/assets/img/logofix.png"
             alt="Logo Dinas Pertanian"
-            className="absolute -top-36 h-72 w-72 object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.1)]"
+            className="absolute -top-42  h-83 w-86 object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.1)]"
           />
           <span className="text-white font-bold text-2xl text-center leading-snug">
             Dinas Pertanian & Dinas Ketahanan Pangan
