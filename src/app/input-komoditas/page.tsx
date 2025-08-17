@@ -46,25 +46,19 @@ export default function InputKomoditas() {
             {/* Card Header */}
             <div className="bg-gradient-to-r from-[#456882] via-[#a5bfcc] to-[#456882] text-white rounded-t-3xl p-4">
               <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-                <h2 className="text-lg sm:text-xl text-center font-semibold">Nama Komoditas</h2>
-                <h2 className="text-lg sm:text-xl text-center font-semibold">Perkiraan Panen</h2>
+                <h2 className="text-lg sm:text-xl text-center font-semibold">Prakiraan Panen</h2>
+                <h2 className="text-lg sm:text-xl text-center font-semibold">Luas Panen</h2>
               </div>
             </div>
 
             {/* Card Content */}
             <div className="p-4 space-y-3 max-h-[320px] overflow-y-auto custom-scrollbar">
               {komoditasData.map((item, index) => (
-                <div key={index} className="grid grid-cols-5 gap-4 sm:gap-6 md:gap-8 relative">
+                <div key={index} className="grid grid-cols-6 gap-4 sm:gap-6 md:gap-18 relative">
                   {/* Nama Komoditas */}
-                  <input
-                    type="text"
-                    placeholder="Isikan Komoditas"
-                    value={item.nama}
-                    onChange={(e) => handleInputChange(index, 'nama', e.target.value)}
-                    className="col-span-3 border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
-                  />
 
-                 <div className="col-span-2 w-full">
+
+                 <div className="col-span-3 w-full">
   <DatePicker
     selected={item.perkiraan}
     onChange={(date) => handleInputChange(index, 'perkiraan', date)}
@@ -74,6 +68,13 @@ export default function InputKomoditas() {
     wrapperClassName="w-full"
   />
 </div>
+                  <input
+                    type="text"
+                    placeholder="Ton"
+                    value={item.nama}
+                    onChange={(e) => handleInputChange(index, 'nama', e.target.value)}
+                    className="col-span-3 border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                  />
 
                 </div>
               ))}

@@ -29,19 +29,19 @@ export default function InputHarga() {
       <Navbar />
 
       {/* Main Content */}
-      <main className=" md:px-4 md:pt-10">
+      <main className=" p-4 sm:p-6 md:p-8">
         <h1 className=" text-3xl sm:text-4xl text-center mb-8 text-gray-800">
           <span>DATA </span>
           <span className='font-bold'>HARGA </span>
           <span>DARI PETANI</span> </h1>
 
         {/* Form Card */}
-        <div className="w-[100%] sm:w-[90%] md:w-[90%] lg:w-[65%] xl:w-[70%] mx-auto transition-all duration-300">
+        <div className="w-[100%] sm:w-[90%] md:w-[90%] lg:w-[65%] xl:w-[60%] mx-auto transition-all duration-300">
           <div className="bg-white rounded-3xl shadow-lg">
             {/* Card Header */}
             <div className="bg-gradient-to-r from-[#456882] via-[#a5bfcc] to-[#456882] text-white rounded-t-3xl p-4">
-              <div className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-                <h2 className="text-lg sm:text-xl text-center font-semibold">Nama Komoditas</h2>
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+                {/* <h2 className="text-lg sm:text-xl text-center font-semibold">Nama Komoditas</h2> */}
                 <h2 className="text-lg sm:text-xl text-center font-semibold">Harga</h2>
                 <h2 className="text-lg sm:text-xl text-center font-semibold">Tanggal</h2>
               </div>
@@ -50,33 +50,36 @@ export default function InputHarga() {
             {/* Card Content */}
             <div className="p-4 space-y-3 max-h-[320px] overflow-y-auto custom-scrollbar">
               {hargaData.map((item, index) => (
-                <div key={index} className="grid grid-cols-7 gap-4 sm:gap-6 md:gap-8 relative">
+                <div key={index} className="grid grid-cols-6 gap-4 sm:gap-6 md:gap-18 relative">
                   {/* Nama Komoditas */}
-                  <input
+                  {/* <input
                     type="text"
                     placeholder="Isikan Komoditas"
                     value={item.komoditas}
                     onChange={(e) => handleInputChange(index, 'komoditas', e.target.value)}
                     className="col-span-3 border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
-                  />
+                  /> */}
 
                   {/* Harga */}
+
                   <input
                     type="number"
                     placeholder="Rp"
                     value={item.harga}
                     onChange={(e) => handleInputChange(index, 'harga', e.target.value)}
-                    className="col-span-2 border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                    className="col-span-3 border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
                   />
-
+                                    <div className="col-span-3 w-full">
                   {/* Tanggal (Date Picker) */}
                   <DatePicker
                     selected={item.tanggal}
                     onChange={(date) => handleInputChange(index, 'tanggal', date)}
                     dateFormat="dd-MM-yyyy"
                     placeholderText="dd/mm/yyyy"
-                    className="col-span-2 border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3 text-center"
+                    className="w-full border-b-2 border-gray-300 bg-transparent text-gray-800 text-center placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+    wrapperClassName="w-full"
                   />
+                  </div>
                 </div>
               ))}
             </div>
