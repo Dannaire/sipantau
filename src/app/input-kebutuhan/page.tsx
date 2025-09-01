@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css"
 export default function InputKebutuhan() {
   const router = useRouter()
   const [hargaData, setHargaData] = useState(
-    Array.from({ length: 30 }, () => ({ komoditas: '', harga: '', tanggal: null }))
+    Array.from({ length: 30 }, () => ({ komoditas: '', harga: '',neraca: '', sedia: '', tanggal: null }))
   )
 
   const handleInputChange = (index: number, field: string, value: any) => {
@@ -40,52 +40,55 @@ export default function InputKebutuhan() {
           <div className="bg-white rounded-3xl shadow-lg">
             {/* Card Header */}
             <div className="bg-gradient-to-r from-[#456882] via-[#a5bfcc] to-[#456882] text-white rounded-t-3xl p-4">
-              <div className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+              <div className="grid grid-cols-4 gap-4 sm:gap-6 md:gap-8">
                 <h2 className="text-lg sm:text-xl text-center font-semibold">Kebutuhan Harian</h2>
                 <h2 className="text-lg sm:text-xl text-center font-semibold">Ketersediaan Harian</h2>
                 <h2 className="text-lg sm:text-xl text-center font-semibold">Neraca Harian</h2>
+                <h2 className="text-lg sm:text-xl text-center font-semibold">Prakiraan Harian</h2>
               </div>
             </div>
 
             {/* Card Content */}
             <div className="p-4 space-y-3 max-h-[320px] overflow-y-auto custom-scrollbar">
               {hargaData.map((item, index) => (
-                <div key={index} className="grid grid-cols-6  sm:gap-6 md:gap-24 relative">
+                <div key={index} className="grid grid-cols-4  sm:gap-6 md:gap-10 relative">
                   {/* Nama Komoditas */}
                   <input
                     type="number"
                     placeholder="Ton"
                     value={item.harga}
                     onChange={(e) => handleInputChange(index, 'harga', e.target.value)}
-                    className="col-span-2 text-center border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                    className=" text-center border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
                   />
 
                   {/* Harga */}
                   <input
                     type="number"
                     placeholder="Ton"
-                    value={item.harga}
-                    onChange={(e) => handleInputChange(index, 'harga', e.target.value)}
-                    className="col-span-2 border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                    value={item.sedia}
+                    onChange={(e) => handleInputChange(index, 'sedia', e.target.value)}
+                    className=" border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
                   />
 
                                     {/* Harga */}
                   <input
                     type="number"
                     placeholder="Ton"
-                    value={item.harga}
-                    onChange={(e) => handleInputChange(index, 'harga', e.target.value)}
-                    className="col-span-2 border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                    value={item.neraca}
+                    onChange={(e) => handleInputChange(index, 'neraca', e.target.value)}
+                    className=" border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
                   />
-
+<div className=''>
                   {/* Tanggal (Date Picker) */}
-                  {/* <DatePicker
-                    selected={item.tanggal}
-                    onChange={(date) => handleInputChange(index, 'tanggal', date)}
-                    dateFormat="dd-MM-yyyy"
-                    placeholderText="dd/mm/yyyy"
-                    className="col-span-2 border-b-2 border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3 text-center"
-                  /> */}
+                    <DatePicker
+                      selected={item.tanggal}
+                      onChange={(date) => handleInputChange(index, 'tanggal', date)}
+                      dateFormat="dd-MM-yyyy"
+                      placeholderText="dd/mm/yyyy"
+                      className="w-full col-span-2 border-b-2 border-gray-300 bg-transparent text-gray-800 text-center placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                      wrapperClassName="w-full"
+                    />
+                   </div>             
                 </div>
               ))}
             </div>
