@@ -19,23 +19,17 @@ export default function PilihKebutuhan() {
 
   const komoditasList = ['Cabai Rawit Merah','Cabai Rawit Hijau', 'Cabai Merah Besar', 'Cabai hijau Besar','Bawang Merah', 'Bawang Putih']
 
-  // 🔥 Ambil marketName & komoditas dari LocalStorage saat pertama load
   useEffect(() => {
     const storedMarket = localStorage.getItem('selectedMarket')
-
-
-
     if (storedMarket) setMarketName(storedMarket)
-
   }, [])
 
   const handleCheckHarga = (komoditas = selectedKomoditasDrop) => {
     if (!komoditas) {
-      setHarga(null) // reset harga jika komoditas kosong
+      setHarga(null)
       return
     }
-
-    localStorage.setItem('selectedKomoditasDrop', komoditas) // 💾 simpan ke localStorage
+    localStorage.setItem('selectedKomoditasDrop', komoditas)
     const fakeHarga = Math.floor(Math.random() * 50000) + 10000
     setHarga(fakeHarga)
     router.push('/input-kebutuhan')
@@ -55,9 +49,7 @@ export default function PilihKebutuhan() {
       alert('Harap pilih komoditas di kanan terlebih dahulu!')
       return
     }
-
-    localStorage.setItem('selectedKomoditasRight', selectedKomoditasRight) // 💾 simpan ke localStorage
-
+    localStorage.setItem('selectedKomoditasRight', selectedKomoditasRight)
     router.push('/price-chart')
   }
 
@@ -78,70 +70,61 @@ export default function PilihKebutuhan() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-r from-[#ffff] to-[#dddcdc]">
+    <main className="min-h-screen bg-gradient-to-r from-[#ffff] to-[#dddcdc] relative pb-20">
       <Navbar />
 
-      <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[95%] xl:w-[90%] mx-auto px-4 sm:px-6 lg:px-20 py-6 transition-all duration-300 items-center">
-        <div className="">
-          {/* Left Side */}
-          <div className="">
-            <h1 className="text-5xl text-center mb-8 text-gray-800 mt-2 leading-none"> <span> PILIH </span> <span className='font-semibold'>KOMODITAS</span>
-            </h1>
+      <div className="w-[95%] sm:w-[92%] md:w-[90%] lg:w-[95%] xl:w-[90%] mx-auto px-3 sm:px-4 md:px-6 lg:px-12 xl:px-20 py-4 sm:py-6 transition-all duration-300">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl text-center mb-4 sm:mb-6 md:mb-8 text-gray-800 mt-2 leading-none">
+          <span>PILIH </span><span className="font-semibold">KOMODITAS</span>
+        </h1>
 
-            <div className="mb-71 items-center flex justify-center">
-              <div className="relative w-[80%]">
-                <input
-                  type="text"
-                  placeholder="Komoditas"
-                  value={selectedKomoditasDrop}
-                  onChange={(e) => setSelectedKomoditasDrop(e.target.value)}
-                  onFocus={() => setShowDropdownLeft(true)}
-                  className="w-full px-4 py-5 bg-white border-2 border-gray-300 rounded-full focus:outline-none focus:border-blue-500 text-gray-900"
-                />
-                <button
-                  onClick={() => handleCheckHarga()}
-                  className="absolute  right-0 top-[5%] bg-gradient-to-r from-[#456882] to-[#a5bfcc] text-white w-16 h-16 rounded-full flex items-center justify-center hover:bg-blue-600 transition"
-                >
-                  <FiSearch size={30} color="white" />
-                </button>
+        <div className="flex justify-center">
+          <div className="relative w-[95%] sm:w-[85%] md:w-[80%] lg:w-[70%]">
+            <input
+              type="text"
+              placeholder="Komoditas"
+              value={selectedKomoditasDrop}
+              onChange={(e) => setSelectedKomoditasDrop(e.target.value)}
+              onFocus={() => setShowDropdownLeft(true)}
+              className="w-full px-4 sm:px-5 py-3.5 sm:py-4 md:py-5 bg-white border-2 border-gray-300 rounded-full focus:outline-none focus:border-blue-500 text-gray-900 text-sm sm:text-base pr-16"
+            />
+            <button
+              onClick={() => handleCheckHarga()}
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-gradient-to-r from-[#456882] to-[#a5bfcc] text-white w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center hover:opacity-90 transition"
+            >
+              <FiSearch size={22} color="white" />
+            </button>
 
-                {showDropdownLeft && (
-                  <div className="absolute top-full w-[96%] left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
-                    {komoditasList.map((komoditas, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          setSelectedKomoditasDrop(komoditas)
-                          setShowDropdownLeft(false)
-                          handleCheckHarga(komoditas)
-                        }}
-                        className="w-full text-left px-4 py-2.5 hover:bg-green-100 first:bg-green-200 border-b border-gray-200 last:border-b-0 text-gray-900"
-                      >
-                        {komoditas}
-                      </button>
-                    ))}
-                  </div>
-                )}
+            {showDropdownLeft && (
+              <div className="absolute top-full w-[96%] left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
+                {komoditasList.map((komoditas, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setSelectedKomoditasDrop(komoditas)
+                      setShowDropdownLeft(false)
+                      handleCheckHarga(komoditas)
+                    }}
+                    className="w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 hover:bg-green-100 first:bg-green-200 border-b border-gray-200 last:border-b-0 text-gray-900 text-sm sm:text-base"
+                  >
+                    {komoditas}
+                  </button>
+                ))}
               </div>
-            </div>
-
-
+            )}
           </div>
-
-          {/* Right Side */}
         </div>
       </div>
 
-      <div className="flex justify-start px-12 md:px-20 -translate-y-10 xl:-translate-y-1">
-        <div className="w-full flex justify-start">
-          <button
-            onClick={() => router.push('/dashboard-dinas-pertanian')}
-            className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-12 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
-          >
-            <HiArrowLeft size={20} color="white" />
-            <span>Back</span>
-          </button>
-        </div>
+      {/* Back Button - always at bottom */}
+      <div className="absolute bottom-6 left-4 sm:left-6 md:left-8 lg:left-12 xl:left-20">
+        <button
+          onClick={() => router.push('/dashboard-dinas-pertanian')}
+          className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 sm:px-8 md:px-12 py-2.5 md:py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2 text-sm md:text-base"
+        >
+          <HiArrowLeft size={18} color="white" />
+          <span>Back</span>
+        </button>
       </div>
     </main>
   )

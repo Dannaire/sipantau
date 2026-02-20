@@ -30,52 +30,50 @@ export default function InputKomoditas() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-      {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 relative pb-20">
       <Navbar />
 
       {/* Main Content */}
-      <main className="p-4 sm:p-6 md:p-8">
-        <h1 className="text-3xl sm:text-4xl text-center mb-8 text-gray-800">
+      <main className="px-3 sm:px-4 md:px-6 lg:px-8 pt-4 sm:pt-6 md:pt-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl text-center mb-4 sm:mb-6 md:mb-8 text-gray-800">
           <span>DATA </span>
-          <span className='font-bold'>KOMODITAS</span> </h1>
+          <span className='font-bold'>KOMODITAS</span>
+        </h1>
 
         {/* Form Card */}
-        <div className="w-[100%] sm:w-[90%] md:w-[90%] lg:w-[65%] xl:w-[60%] mx-auto transition-all duration-300">
-          <div className="bg-white rounded-3xl shadow-lg">
+        <div className="w-full sm:w-[95%] md:w-[90%] lg:w-[65%] xl:w-[60%] mx-auto transition-all duration-300">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg">
             {/* Card Header */}
-            <div className="bg-gradient-to-r from-[#456882] via-[#a5bfcc] to-[#456882] text-white rounded-t-3xl p-4">
-              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-                <h2 className="text-lg sm:text-xl text-center font-semibold">Prakiraan Panen</h2>
-                <h2 className="text-lg sm:text-xl text-center font-semibold">Luas Panen</h2>
+            <div className="bg-gradient-to-r from-[#456882] via-[#a5bfcc] to-[#456882] text-white rounded-t-2xl sm:rounded-t-3xl p-3 sm:p-4">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-8">
+                <h2 className="text-sm sm:text-lg md:text-xl text-center font-semibold">Prakiraan Panen</h2>
+                <h2 className="text-sm sm:text-lg md:text-xl text-center font-semibold">Luas Panen</h2>
               </div>
             </div>
 
             {/* Card Content */}
-            <div className="p-4 space-y-3 max-h-[320px] overflow-y-auto custom-scrollbar">
+            <div className="p-2 sm:p-3 md:p-4 space-y-2 sm:space-y-3 max-h-[280px] sm:max-h-[320px] overflow-y-auto custom-scrollbar">
               {komoditasData.map((item, index) => (
-                <div key={index} className="grid grid-cols-6 gap-4 sm:gap-6 md:gap-18 relative">
-                  {/* Nama Komoditas */}
-
-
-                 <div className="col-span-3 w-full">
-  <DatePicker
-    selected={item.perkiraan}
-    onChange={(date) => handleInputChange(index, 'perkiraan', date)}
-    dateFormat="dd-MM-yyyy"
-    placeholderText="dd/mm/yyyy"
-    className="w-full border-b-2 border-gray-300 bg-transparent text-gray-800 text-center placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
-    wrapperClassName="w-full"
-  />
-</div>
+                <div key={index} className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-8 relative">
+                  {/* Prakiraan Panen */}
+                  <div className="w-full">
+                    <DatePicker
+                      selected={item.perkiraan}
+                      onChange={(date) => handleInputChange(index, 'perkiraan', date)}
+                      dateFormat="dd-MM-yyyy"
+                      placeholderText="dd/mm/yyyy"
+                      className="w-full border-b-2 border-gray-300 bg-transparent text-gray-800 text-center placeholder-gray-400 focus:border-blue-500 outline-none p-1.5 sm:p-2 md:p-3 text-sm sm:text-base"
+                      wrapperClassName="w-full"
+                    />
+                  </div>
+                  {/* Luas Panen */}
                   <input
                     type="text"
                     placeholder="Ton"
                     value={item.nama}
                     onChange={(e) => handleInputChange(index, 'nama', e.target.value)}
-                    className="col-span-3 border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-2 sm:p-3"
+                    className="border-b-2 text-center border-gray-300 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 outline-none p-1.5 sm:p-2 md:p-3 text-sm sm:text-base"
                   />
-
                 </div>
               ))}
             </div>
@@ -85,7 +83,7 @@ export default function InputKomoditas() {
           <div className="relative -mt-4 flex justify-center">
             <button
               onClick={handleSubmit}
-              className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-12 py-1 rounded-full text-lg transition-colors shadow-lg outline outline-1 outline-black z-50"
+              className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-8 sm:px-10 md:px-12 py-1 rounded-full text-base sm:text-lg transition-colors shadow-lg outline outline-1 outline-black z-50"
             >
               Input
             </button>
@@ -93,16 +91,14 @@ export default function InputKomoditas() {
         </div>
 
         {/* Back Button */}
-        <div className="flex justify-start px-12 md:px-20 -translate-y-10">
-<div className="w-full flex justify-start mt-20 pl-24">
-  <button
-    onClick={() => router.push('/dashboard-dinas-pertanian')}
-    className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-12 py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2"
-  >
-    <HiArrowLeft size={20} color="white" />
-    <span>Back</span>
-  </button>
-</div>
+        <div className="absolute bottom-6 left-3 sm:left-4 md:left-6 lg:left-8 xl:left-20">
+          <button
+            onClick={() => router.push('/dashboard-dinas-pertanian')}
+            className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 sm:px-8 md:px-12 py-2.5 md:py-3 rounded-full shadow-md transition duration-300 flex items-center space-x-2 text-sm md:text-base"
+          >
+            <HiArrowLeft size={18} color="white" />
+            <span>Back</span>
+          </button>
         </div>
       </main>
     </div>
