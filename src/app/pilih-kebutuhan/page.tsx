@@ -4,69 +4,46 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/ui/Navbar'
 import { FiSearch } from 'react-icons/fi'
-import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+import { HiArrowLeft } from 'react-icons/hi'
 
 export default function PilihKebutuhan() {
   const router = useRouter()
 
   const [marketName, setMarketName] = useState('Pasar Tidak Diketahui')
-  const [selectedDate, setSelectedDate] = useState({ day: '', month: '', year: '' })
   const [selectedKomoditasDrop, setSelectedKomoditasDrop] = useState('')
-  const [selectedKomoditasRight, setSelectedKomoditasRight] = useState('')
   const [showDropdownLeft, setShowDropdownLeft] = useState(false)
-  const [showDropdownRight, setShowDropdownRight] = useState(false)
-  const [harga, setHarga] = useState<number | null>(null)
 
-  const komoditasList = ['Cabai Rawit Merah','Cabai Rawit Hijau', 'Cabai Merah Besar', 'Cabai hijau Besar','Bawang Merah', 'Bawang Putih']
+  const [komoditasList, setKomoditasList] = useState<{id: number, nama_komoditas: string}[]>([])
 
   useEffect(() => {
     const storedMarket = localStorage.getItem('selectedMarket')
     if (storedMarket) setMarketName(storedMarket)
+
+    // Fetch komoditas dari API
+    fetch('/api/komoditas')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success && Array.isArray(data.data)) {
+          setKomoditasList(data.data)
+        }
+      })
+      .catch(err => console.error('Gagal fetch komoditas:', err))
   }, [])
 
   const handleCheckHarga = (komoditas = selectedKomoditasDrop) => {
     if (!komoditas) {
-      setHarga(null)
+      alert('Pilih komoditas terlebih dahulu!')
       return
     }
+
+    // Cari id dari komoditas yang dipilih
+    const selectedItem = komoditasList.find(k => k.nama_komoditas === komoditas)
+    if (selectedItem) {
+      localStorage.setItem('selectedKomoditasId', selectedItem.id.toString())
+    }
+
     localStorage.setItem('selectedKomoditasDrop', komoditas)
-    const fakeHarga = Math.floor(Math.random() * 50000) + 10000
-    setHarga(fakeHarga)
     router.push('/input-kebutuhan')
-  }
-
-  const handleCheckHargaKanan = () => {
-    if (!selectedKomoditasDrop || !selectedDate.day || !selectedDate.month || !selectedDate.year) {
-      alert('Harap pilih komoditas di kiri dan isi tanggal terlebih dahulu!')
-      return
-    }
-    const fakeHarga = Math.floor(Math.random() * 50000) + 10000
-    setHarga(fakeHarga)
-  }
-
-  const handleCheckKomoditas = () => {
-    if (!selectedKomoditasRight) {
-      alert('Harap pilih komoditas di kanan terlebih dahulu!')
-      return
-    }
-    localStorage.setItem('selectedKomoditasRight', selectedKomoditasRight)
-    router.push('/price-chart')
-  }
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    const [year, month, day] = value.split('-')
-    setSelectedDate({ day, month, year })
-  }
-
-  const updateDateField = (field: 'day' | 'month' | 'year', value: string) => {
-    const updatedDate = { ...selectedDate, [field]: value }
-    setSelectedDate(updatedDate)
-
-    const hiddenInput = document.querySelector<HTMLInputElement>('#hiddenDateInput')
-    if (hiddenInput) {
-      hiddenInput.value = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`
-    }
   }
 
   return (
@@ -95,19 +72,19 @@ export default function PilihKebutuhan() {
               <FiSearch size={22} color="white" />
             </button>
 
-            {showDropdownLeft && (
+            {showDropdownLeft && komoditasList.length > 0 && (
               <div className="absolute top-full w-[96%] left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
-                {komoditasList.map((komoditas, index) => (
+                {komoditasList.map((item) => (
                   <button
-                    key={index}
+                    key={item.id}
                     onClick={() => {
-                      setSelectedKomoditasDrop(komoditas)
+                      setSelectedKomoditasDrop(item.nama_komoditas)
                       setShowDropdownLeft(false)
-                      handleCheckHarga(komoditas)
+                      handleCheckHarga(item.nama_komoditas)
                     }}
                     className="w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 hover:bg-green-100 first:bg-green-200 border-b border-gray-200 last:border-b-0 text-gray-900 text-sm sm:text-base"
                   >
-                    {komoditas}
+                    {item.nama_komoditas}
                   </button>
                 ))}
               </div>

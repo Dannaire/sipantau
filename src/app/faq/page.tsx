@@ -39,7 +39,7 @@ export default function FAQ() {
                   Apa itu SIPANTAU?
                 </h2>
                 <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-                  SIPANTAU adalah Sistem Informasi Prediksi dan Pantauan Komoditas yang dirancang untuk membantu pemantauan harga dan distribusi komoditas di berbagai pasar secara real-time.
+                  SIPANTAU adalah Sistem Informasi Prediksi dan Pantauan Komoditas yang dirancang untuk membantu pemantauan harga dan distribusi komoditas di berbagai pasar di Sukabumi secara real-time.
                 </p>
               </div>
 

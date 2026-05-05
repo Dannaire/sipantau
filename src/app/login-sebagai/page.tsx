@@ -3,15 +3,36 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
+import { isSessionValid, getUserRole, getDashboardByRole } from '@/lib/auth'
 
 export default function LoginSelection() {
   const router = useRouter()
   const [marketName, setMarketName] = useState('')
+  const [checking, setChecking] = useState(true)
 
   useEffect(() => {
+    // Cek apakah sudah ada session yang valid
+    if (isSessionValid()) {
+      const role = getUserRole()
+      if (role) {
+        router.replace(getDashboardByRole(role))
+        return
+      }
+    }
+    setChecking(false)
+
     const saved = localStorage.getItem('selectedMarket')
     if (saved) setMarketName(saved)
-  }, [])
+  }, [router])
+
+  // Tampilkan loading saat mengecek session
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#456882]">
+        <div className="text-white text-lg">Memuat...</div>
+      </div>
+    )
+  }
 
   return (
     <main

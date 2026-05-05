@@ -8,13 +8,10 @@ import { HiArrowLeft } from 'react-icons/hi'
 
 // Komoditas list
 const komoditasList = [
-  'Cabai Rawit',
+  'Beras Medium',
+  'Cabai Rawit Merah',
   'Cabai Merah Besar',
   'Bawang Merah',
-  'Padi',
-  'Beras Medium',
-  'Beras Premium',
-  'Bawang Putih',
 ]
 
 export default function DashboardTPID() {
@@ -141,7 +138,7 @@ export default function DashboardTPID() {
           </div>
         </div>
 
-        {/* Back Button - Desktop: top area, Mobile: bottom */}
+        {/* Back Button - Desktop */}
         <div className="hidden md:block mt-12 lg:mt-20 pb-4">
           <button
             onClick={() => router.push('/dashboard-tim-pengendalian')}
@@ -151,6 +148,7 @@ export default function DashboardTPID() {
             <span>Back</span>
           </button>
         </div>
+        {/* Back Button - Mobile */}
         <div className="flex md:hidden mt-6 pb-4">
           <button
             onClick={() => router.push('/dashboard-tim-pengendalian')}

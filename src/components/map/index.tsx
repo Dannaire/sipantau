@@ -32,7 +32,7 @@ const labelConfig: Record<string, { dx: number; dy: number; line: string }> = {
     'Pasar Cibadak':       { dx: 35,   dy: -22,   line: 'L' },       // L-shaped right
     'Pasar Cisaat':        { dx: -47,  dy: 40,    line: 'down' },    // straight down
     'Pasar Sukaraja':      { dx: 40,   dy: 5,     line: 'L' },       // L-shaped right
-    'Pasar Sagaranten':    { dx: 25,   dy: -30,   line: 'L' },       // L-shaped top-right
+    'Pasar Warungkiara':    { dx: 25,   dy: -30,   line: 'L' },       // L-shaped top-right
     'Pasar Surade':        { dx: -47,  dy: -45,   line: 'up' },      // straight up
     'Pasar Palabuhanratu': { dx: 30,   dy: 38,    line: 'L' },       // L-shaped bottom-right
 }

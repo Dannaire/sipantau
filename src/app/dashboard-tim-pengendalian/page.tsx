@@ -6,59 +6,49 @@ import { useRouter } from 'next/navigation'
 import { FiSearch, FiChevronDown } from 'react-icons/fi'
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
 import dynamic from 'next/dynamic' // 1. Import dynamic untuk load peta
+import { isSessionValid, getUserRole, getDashboardByRole } from '@/lib/auth'
 
 // Data Komoditas
 const komoditasList = [
   'Beras Medium',
-  'Beras Premium',
-  'Cabai Merah Besar',
-  'Cabai Merah Keriting',
   'Cabai Rawit Merah',
+  'Cabai Merah Besar',
   'Bawang Merah',
-  'Bawang Putih',
 ]
 
 // 2. Data Pasar dengan Koordinat & Harga per Komoditas (Dummy)
 const pasarData = [
   { name: 'Pasar Cisaat', lat: -6.9133, lng: 106.9036, image: '/assets/img/fotocisaat.jpg', prices: {
-    'Beras Medium': '14.000/Kg', 'Beras Premium': '16.000/Kg',
-    'Cabai Merah Besar': '45.000/Kg', 'Cabai Merah Keriting': '42.000/Kg',
-    'Cabai Rawit Merah': '55.000/Kg', 'Bawang Merah': '35.000/Kg', 'Bawang Putih': '40.000/Kg',
+    'Beras Medium': '14.000/Kg', 'Cabai Rawit Merah': '55.000/Kg',
+    'Cabai Merah Besar': '45.000/Kg', 'Bawang Merah': '35.000/Kg',
   }},
-  { name: 'Pasar Parungkuda', lat: -6.8407, lng: 106.7571, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '20.000/Kg', 'Beras Premium': '22.000/Kg',
-    'Cabai Merah Besar': '48.000/Kg', 'Cabai Merah Keriting': '44.000/Kg',
-    'Cabai Rawit Merah': '58.000/Kg', 'Bawang Merah': '38.000/Kg', 'Bawang Putih': '42.000/Kg',
+  { name: 'Pasar Parungkuda', lat: -6.8407, lng: 106.7571, image: '/assets/img/fotoparung.jfif', prices: {
+    'Beras Medium': '20.000/Kg', 'Cabai Rawit Merah': '58.000/Kg',
+    'Cabai Merah Besar': '48.000/Kg', 'Bawang Merah': '38.000/Kg',
   }},
-  { name: 'Pasar Cicurug', lat: -6.7865, lng: 106.7802, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '18.000/Kg', 'Beras Premium': '20.000/Kg',
-    'Cabai Merah Besar': '46.000/Kg', 'Cabai Merah Keriting': '43.000/Kg',
-    'Cabai Rawit Merah': '56.000/Kg', 'Bawang Merah': '36.000/Kg', 'Bawang Putih': '41.000/Kg',
+  { name: 'Pasar Cicurug', lat: -6.7865, lng: 106.7802, image: '/assets/img/fotocicurug.jpg', prices: {
+    'Beras Medium': '18.000/Kg', 'Cabai Rawit Merah': '56.000/Kg',
+    'Cabai Merah Besar': '46.000/Kg', 'Bawang Merah': '36.000/Kg',
   }},
-  { name: 'Pasar Cibadak', lat: -6.8925, lng: 106.7800, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '14.000/Kg', 'Beras Premium': '15.500/Kg',
-    'Cabai Merah Besar': '44.000/Kg', 'Cabai Merah Keriting': '41.000/Kg',
-    'Cabai Rawit Merah': '54.000/Kg', 'Bawang Merah': '34.000/Kg', 'Bawang Putih': '39.000/Kg',
+  { name: 'Pasar Cibadak', lat: -6.8925, lng: 106.7800, image: '/assets/img/fotocibadak.jfif', prices: {
+    'Beras Medium': '14.000/Kg', 'Cabai Rawit Merah': '54.000/Kg',
+    'Cabai Merah Besar': '44.000/Kg', 'Bawang Merah': '34.000/Kg',
   }},
-  { name: 'Pasar Sukaraja', lat: -6.9369, lng: 106.9450, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '17.000/Kg', 'Beras Premium': '19.000/Kg',
-    'Cabai Merah Besar': '47.000/Kg', 'Cabai Merah Keriting': '45.000/Kg',
-    'Cabai Rawit Merah': '57.000/Kg', 'Bawang Merah': '37.000/Kg', 'Bawang Putih': '43.000/Kg',
+  { name: 'Pasar Sukaraja', lat: -6.9369, lng: 106.9450, image: '/assets/img/fotosukaraja.jpg', prices: {
+    'Beras Medium': '17.000/Kg', 'Cabai Rawit Merah': '57.000/Kg',
+    'Cabai Merah Besar': '47.000/Kg', 'Bawang Merah': '37.000/Kg',
   }},
-  { name: 'Pasar Surade', lat: -7.3486, lng: 106.5742, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '18.000/Kg', 'Beras Premium': '21.000/Kg',
-    'Cabai Merah Besar': '50.000/Kg', 'Cabai Merah Keriting': '46.000/Kg',
-    'Cabai Rawit Merah': '60.000/Kg', 'Bawang Merah': '40.000/Kg', 'Bawang Putih': '45.000/Kg',
+  { name: 'Pasar Surade', lat: -7.3486, lng: 106.5742, image: '/assets/img/fotosurade.jpg', prices: {
+    'Beras Medium': '18.000/Kg', 'Cabai Rawit Merah': '60.000/Kg',
+    'Cabai Merah Besar': '50.000/Kg', 'Bawang Merah': '40.000/Kg',
   }},
-  { name: 'Pasar Sagaranten', lat: -7.2144, lng: 106.8833, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '13.000/Kg', 'Beras Premium': '15.000/Kg',
-    'Cabai Merah Besar': '43.000/Kg', 'Cabai Merah Keriting': '40.000/Kg',
-    'Cabai Rawit Merah': '52.000/Kg', 'Bawang Merah': '33.000/Kg', 'Bawang Putih': '38.000/Kg',
+  { name: 'Pasar Warungkiara', lat: -7.2144, lng: 106.8833, image: '/assets/img/fotokiara.jpg', prices: {
+    'Beras Medium': '13.000/Kg', 'Cabai Rawit Merah': '52.000/Kg',
+    'Cabai Merah Besar': '43.000/Kg', 'Bawang Merah': '33.000/Kg',
   }},
-  { name: 'Pasar Palabuhanratu', lat: -6.9877, lng: 106.5513, image: '/assets/img/map.png', prices: {
-    'Beras Medium': '16.000/Kg', 'Beras Premium': '18.000/Kg',
-    'Cabai Merah Besar': '49.000/Kg', 'Cabai Merah Keriting': '47.000/Kg',
-    'Cabai Rawit Merah': '59.000/Kg', 'Bawang Merah': '39.000/Kg', 'Bawang Putih': '44.000/Kg',
+  { name: 'Pasar Palabuhanratu', lat: -6.9877, lng: 106.5513, image: '/assets/img/fotopelabuhanratu.jpg', prices: {
+    'Beras Medium': '16.000/Kg', 'Cabai Rawit Merah': '59.000/Kg',
+    'Cabai Merah Besar': '49.000/Kg', 'Bawang Merah': '39.000/Kg',
   }},
 ];
 
@@ -130,6 +120,15 @@ export default function DashboardTimPenanggulangan() {
   }
 
   const handleCheckHarga = () => {
+    // Jika sudah login, langsung ke dashboard sesuai role
+    if (isSessionValid()) {
+      const role = getUserRole()
+      if (role) {
+        router.push(getDashboardByRole(role))
+        return
+      }
+    }
+    // Jika belum login, ke halaman login
     router.push('/login-sebagai')
   }
 

@@ -3,15 +3,85 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
+import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
+import { saveSession, getDashboardByRole } from '@/lib/auth'
 
 export default function LoginDinasPertanian() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const [popup, setPopup] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
-  const handleLogin = () => {
-    if (email && password) {
-      router.push('/dashboard-dinas-pertanian')
+  const validate = () => {
+    const newErrors: { email?: string; password?: string } = {}
+    if (!email.trim()) {
+      newErrors.email = 'Email wajib diisi.'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Format email tidak valid.'
+    }
+    if (!password.trim()) {
+      newErrors.password = 'Password wajib diisi.'
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleLogin = async () => {
+    if (!validate()) return
+
+    setIsLoading(true)
+    setPopup(null)
+
+    try {
+      const params = new URLSearchParams({ email, password })
+      const url = `/api/login?${params.toString()}`
+      console.log('[Login] Mengirim request ke:', url)
+
+      const response = await fetch(url, {
+        method: 'POST',
+      })
+
+      const data = await response.json()
+      console.log('[Login] Response status:', response.status)
+      console.log('[Login] Response data:', data)
+
+      if (response.ok && data.success) {
+        const token = data?.data?.token || data?.token
+        if (token) {
+          // Fetch user info untuk mendapatkan role
+          let role = 'dinas_pertanian' // default role untuk halaman ini
+          try {
+            const meRes = await fetch('/api/me', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            })
+            const meData = await meRes.json()
+            if (meData?.role) role = meData.role
+          } catch {
+            console.warn('[Login] Gagal fetch role, menggunakan default')
+          }
+
+          // Simpan session dengan token, role, dan timestamp
+          saveSession(token, role)
+          console.log('[Login] Session tersimpan dengan role:', role)
+
+          setPopup({ type: 'success', message: 'Login berhasil! Anda akan diarahkan ke dashboard.' })
+          setTimeout(() => {
+            router.push(getDashboardByRole(role))
+          }, 1800)
+        }
+      } else {
+        const msg = data.message || data.error || 'Email atau password salah.'
+        console.warn('[Login] Login gagal:', msg)
+        setPopup({ type: 'error', message: msg })
+      }
+    } catch (err) {
+      console.error('[Login] Error:', err)
+      setPopup({ type: 'error', message: 'Gagal terhubung ke server. Periksa koneksi Anda.' })
+
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -28,6 +98,31 @@ export default function LoginDinasPertanian() {
         backgroundRepeat: 'no-repeat',
       }}
     >
+      {/* Popup Notifikasi */}
+      {popup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className={`bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-sm text-center flex flex-col items-center gap-4 animate-fadeIn`}>
+            {popup.type === 'success' ? (
+              <HiCheckCircle className="text-green-500" size={56} />
+            ) : (
+              <HiXCircle className="text-red-500" size={56} />
+            )}
+            <p className={`text-base sm:text-lg font-semibold ${popup.type === 'success' ? 'text-green-700' : 'text-red-700'}`}>
+              {popup.type === 'success' ? 'Login Berhasil!' : 'Login Gagal'}
+            </p>
+            <p className="text-gray-600 text-sm sm:text-base">{popup.message}</p>
+            {popup.type === 'error' && (
+              <button
+                onClick={() => setPopup(null)}
+                className="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-full transition text-sm"
+              >
+                Tutup
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-white rounded-b-[40px] sm:rounded-b-[55px] md:rounded-b-[65px] px-4 sm:px-6 flex items-center justify-center shadow-md w-[50%] sm:w-[30%] md:w-[20%] lg:w-[15%] xl:w-[12%] h-16 sm:h-20 md:h-24 transition-all duration-300">
         <img
@@ -36,7 +131,6 @@ export default function LoginDinasPertanian() {
           className="h-[150%] sm:h-[160%] md:h-[170%] object-contain"
         />
       </div>
-
 
       {/* Back Button - Desktop only (top) */}
       <div className="hidden md:flex w-full justify-start mt-20 pl-16 lg:pl-24">
@@ -49,7 +143,6 @@ export default function LoginDinasPertanian() {
         </button>
       </div>
 
-
       {/* Login Form */}
       <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-10 w-[95%] sm:w-[85%] md:w-[70%] lg:w-[60%] xl:w-[55%] mx-auto mt-20 sm:mt-24 md:mt-12 lg:mt-16 relative z-10 transition-all duration-300">
         <h2 className="text-center text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-4 sm:mb-6 md:mb-8 text-gray-800">
@@ -57,32 +150,54 @@ export default function LoginDinasPertanian() {
         </h2>
 
         <div className="space-y-4 sm:space-y-5 md:space-y-6">
+          {/* Email Field */}
           <div>
             <input
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-gray-700 transition text-sm sm:text-base"
+              onChange={(e) => { setEmail(e.target.value); setErrors(prev => ({ ...prev, email: undefined })) }}
+              className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-md focus:ring-2 outline-none text-gray-700 transition text-sm sm:text-base ${
+                errors.email ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+              }`}
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
+          {/* Password Field */}
           <div>
             <input
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-gray-700 transition text-sm sm:text-base"
+              onChange={(e) => { setPassword(e.target.value); setErrors(prev => ({ ...prev, password: undefined })) }}
+              className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-md focus:ring-2 outline-none text-gray-700 transition text-sm sm:text-base ${
+                errors.password ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+              }`}
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.password}</p>
+            )}
           </div>
 
+          {/* Submit Button */}
           <div className="flex justify-center">
             <button
               onClick={handleLogin}
-              className="w-full sm:w-[50%] md:w-[30%] bg-yellow-500 text-white py-2.5 sm:py-3 rounded-full font-semibold hover:bg-yellow-600 transition-colors shadow-md text-sm sm:text-base"
+              disabled={isLoading}
+              className="w-full sm:w-[50%] md:w-[30%] bg-yellow-500 text-white py-2.5 sm:py-3 rounded-full font-semibold hover:bg-yellow-600 transition-colors shadow-md text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Masuk
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                  </svg>
+                  Memproses...
+                </>
+              ) : 'Masuk'}
             </button>
           </div>
         </div>
@@ -101,6 +216,16 @@ export default function LoginDinasPertanian() {
           <span>Back</span>
         </button>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.25s ease-out;
+        }
+      `}</style>
     </main>
   )
 }
