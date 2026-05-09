@@ -39,9 +39,14 @@ export default function LoginDinasPertanian() {
       const url = `/api/login?${params.toString()}`
       console.log('[Login] Mengirim request ke:', url)
 
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 15000)
+
       const response = await fetch(url, {
         method: 'POST',
+        signal: controller.signal,
       })
+      clearTimeout(timeoutId)
 
       const data = await response.json()
       console.log('[Login] Response status:', response.status)
@@ -69,16 +74,21 @@ export default function LoginDinasPertanian() {
           setPopup({ type: 'success', message: 'Login berhasil! Anda akan diarahkan ke dashboard.' })
           setTimeout(() => {
             router.push(getDashboardByRole(role))
-          }, 1800)
+          }, 800)
         }
       } else {
         const msg = data.message || data.error || 'Email atau password salah.'
         console.warn('[Login] Login gagal:', msg)
         setPopup({ type: 'error', message: msg })
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('[Login] Error:', err)
-      setPopup({ type: 'error', message: 'Gagal terhubung ke server. Periksa koneksi Anda.' })
+      const error = err as Error
+      if (error?.name === 'AbortError') {
+        setPopup({ type: 'error', message: 'Koneksi timeout. Server tidak merespons dalam 15 detik. Coba lagi.' })
+      } else {
+        setPopup({ type: 'error', message: 'Gagal terhubung ke server. Periksa koneksi Anda.' })
+      }
 
     } finally {
       setIsLoading(false)
