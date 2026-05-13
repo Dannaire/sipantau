@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), BACKEND_TIMEOUT)
 
-    const response = await fetch('http://sipantau.simdacloud.id/api/ketersediaan', {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/ketersediaan`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

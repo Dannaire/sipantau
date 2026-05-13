@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), BACKEND_TIMEOUT)
 
-    const response = await fetch('http://sipantau.simdacloud.id/api/komoditas', {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/komoditas`, {
       method: 'GET',
       headers,
       signal: controller.signal,

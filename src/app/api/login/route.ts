@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const params = new URLSearchParams({ email, password })
-    const backendUrl = `http://sipantau.simdacloud.id/api/login?${params.toString()}`
+    const backendUrl = `${process.env.BACKEND_URL}/api/login?${params.toString()}`
     console.log('[Login Proxy] Mencoba URL:', backendUrl)
 
     const controller = new AbortController()

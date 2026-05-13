@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const headers: HeadersInit = { 'Accept': 'application/json' }
     if (token) headers['Authorization'] = `Bearer ${token}`
 
-    const url = `http://sipantau.simdacloud.id/api/predict?pasar_id=${pasar_id}&komoditas_id=${komoditas_id}`
+    const url = `${process.env.BACKEND_URL}/api/predict?pasar_id=${pasar_id}&komoditas_id=${komoditas_id}`
     console.log('[/api/predict] Fetching:', url)
 
     const controller = new AbortController()
